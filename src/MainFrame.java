@@ -2,14 +2,19 @@ import javax.swing.*;
 import java.awt.*;
 
 public class MainFrame extends JFrame {
+    CardLayout cardLayout;
     JPanel northPanel;
     JPanel centerPanel;
     JPanel southPanel;
 
-    JButton testButton;
+    JPanel cardOne;
+    JPanel cardTwo;
+
+    JButton cardOneButton;
+    JButton cardTwoButton;
     JButton quitButton;
 
-    JLabel placeholderLabel;
+    JLabel mainLabel;
 
     public MainFrame() {
         super("Lab 10: Sorted Array List");
@@ -29,13 +34,20 @@ public class MainFrame extends JFrame {
 
     private JPanel createNorthPanel() {
         northPanel = new JPanel();
-        placeholderLabel = new JLabel("Placeholder Content", SwingConstants.CENTER);
-        northPanel.add(placeholderLabel);
+        mainLabel = new JLabel("Random Product Maker", SwingConstants.CENTER);
+        northPanel.add(mainLabel);
         return northPanel;
     }
 
     private JPanel createCenterPanel() {
-        centerPanel = new JPanel(new CardLayout());
+        cardLayout = new CardLayout();
+        centerPanel = new JPanel(cardLayout);
+        cardOne = RandProductMaker.getFramePanel();
+        cardTwo = RandProductSearch.getFramePanel();
+        centerPanel.add(cardOne, "view1");
+        centerPanel.add(cardTwo, "view2");
+
+        cardLayout.show(centerPanel, "view1");
         // This is intentionally left empty for now
         return centerPanel;
     }
@@ -43,14 +55,25 @@ public class MainFrame extends JFrame {
     private JPanel createSouthPanel() {
         southPanel = new JPanel();
 
-        testButton = new JButton("Test");
+        cardOneButton = new JButton("Switch to Card One");
+        cardTwoButton = new JButton("Switch to Card Two");
         quitButton = new JButton("Quit");
 
         // Add lambda-based action listeners
-        testButton.addActionListener(e -> System.out.println("Test button clicked!"));
+        cardOneButton.addActionListener(e -> {
+            cardLayout.show(centerPanel, "view1");
+            mainLabel.setText("Random Product Maker");
+            System.out.println("Clicked card one");
+        });
+        cardTwoButton.addActionListener(e -> {
+            cardLayout.show(centerPanel, "view2");
+            mainLabel.setText("Random Product Searcher");
+            System.out.println("Clicked card two");
+        });
         quitButton.addActionListener(e -> System.exit(0));
 
-        southPanel.add(testButton);
+        southPanel.add(cardOneButton);
+        southPanel.add(cardTwoButton);
         southPanel.add(quitButton);
 
         return southPanel;
