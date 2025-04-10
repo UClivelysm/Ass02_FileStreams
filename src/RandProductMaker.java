@@ -2,7 +2,6 @@ import javax.swing.*;
 import java.awt.*;
 
 public class RandProductMaker{
-    JPanel mainPanel;
     public static JPanel getFramePanel(){
         return createMainPanel();
     }

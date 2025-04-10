@@ -53,7 +53,25 @@ public class FilePicker {
         }
     }
 
+    public static void FileWriter(String input) {
+        // Get the current working directory and create a File object for OutputFile.txt
+        String workingDir = System.getProperty("user.dir");
+        File outputFile = new File(workingDir, "OutputFile.txt");
 
-
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(outputFile))) {
+            writer.write(input);
+            // Pop-up message showing the file was written along with its full path.
+            JOptionPane.showMessageDialog(null,
+                    "File was written successfully to:\n" + outputFile.getAbsolutePath(),
+                    "File Written",
+                    JOptionPane.INFORMATION_MESSAGE);
+        } catch (IOException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null,
+                    "Error writing to file: " + e.getMessage(),
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE);
+        }
+    }
 
 }
