@@ -60,8 +60,8 @@ public class MainFrame extends JFrame {
     private JPanel createSouthPanel() {
         southPanel = new JPanel();
 
-        cardOneButton = new JButton("Switch to Card One");
-        cardTwoButton = new JButton("Switch to Card Two");
+        cardOneButton = new JButton("Switch to Product Maker");
+        cardTwoButton = new JButton("Switch to Product Searcher");
         quitButton = new JButton("Quit");
 
         // Add lambda-based action listeners
@@ -93,7 +93,7 @@ public class MainFrame extends JFrame {
 
         //top panel
         JPanel makerTopPanel = new JPanel(new GridLayout(2, 1));
-        JLabel makerTitleLabel = new JLabel("Rand Product", SwingConstants.CENTER);
+        JLabel makerTitleLabel = new JLabel("Product Maker", SwingConstants.CENTER);
         JLabel enteryCountLabel = new JLabel("Entries:", SwingConstants.CENTER);
         makerTopPanel.add(makerTitleLabel);
         makerTopPanel.add(enteryCountLabel);
@@ -214,7 +214,7 @@ public class MainFrame extends JFrame {
         JPanel searchMainPanel = new JPanel(new BorderLayout());
         //top Panel
         JPanel searchTitlePanel = new JPanel(new BorderLayout());
-        JLabel searchTitleLabel = new JLabel("Rand Product Search", SwingConstants.CENTER);
+        JLabel searchTitleLabel = new JLabel("Product Searcher", SwingConstants.CENTER);
         JLabel searchFileNameLabel = new JLabel("Input File:", SwingConstants.CENTER);
         searchTitlePanel.add(searchTitleLabel, BorderLayout.NORTH);
         searchTitlePanel.add(searchFileNameLabel, BorderLayout.SOUTH);
