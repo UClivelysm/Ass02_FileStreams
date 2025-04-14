@@ -52,6 +52,17 @@ public class FilePicker {
             return "Error in Reading";
         }
     }
+    public static String NoCaseSearchedStreamRead(File inputFile, String searchTerm) {
+        String lowerSearch = searchTerm.toLowerCase();
+        try (Stream<String> lines = Files.lines(inputFile.toPath())) {
+            return lines.filter(line -> line.toLowerCase().contains(lowerSearch))
+                    .collect(Collectors.joining(System.lineSeparator()));
+        } catch (IOException e) {
+            e.printStackTrace();
+            return "Error in Reading";
+        }
+    }
+
 
     public static void FileWriter(String input) {
         // Get the current working directory and create a File object for OutputFile.txt
@@ -73,5 +84,28 @@ public class FilePicker {
                     JOptionPane.ERROR_MESSAGE);
         }
     }
+    public static void SmartFileWriter(String input) {
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setDialogTitle("Specify a file to save");
+
+        int userSelection = fileChooser.showSaveDialog(null);
+        if (userSelection == JFileChooser.APPROVE_OPTION) {
+            File outputFile = fileChooser.getSelectedFile();
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter(outputFile))) {
+                writer.write(input);
+                JOptionPane.showMessageDialog(null,
+                        "File was written successfully to:\n" + outputFile.getAbsolutePath(),
+                        "File Written",
+                        JOptionPane.INFORMATION_MESSAGE);
+            } catch (IOException e) {
+                e.printStackTrace();
+                JOptionPane.showMessageDialog(null,
+                        "Error writing to file: " + e.getMessage(),
+                        "Error",
+                        JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }
+
 
 }
