@@ -83,13 +83,22 @@ public class MainFrame extends JFrame {
 
         return southPanel;
     }
+    int entryCount = 0;
+
     private JPanel createMakerPanel() {
+
         ArrayList<Product> products = new ArrayList<Product>();
 
         JPanel makerMainPanel = new JPanel(new BorderLayout());
 
         //top panel
+        JPanel makerTopPanel = new JPanel(new GridLayout(2, 1));
         JLabel makerTitleLabel = new JLabel("Rand Product", SwingConstants.CENTER);
+        JLabel enteryCountLabel = new JLabel("Entries:", SwingConstants.CENTER);
+        makerTopPanel.add(makerTitleLabel);
+        makerTopPanel.add(enteryCountLabel);
+
+
 
         //center panel
         JPanel makerCenterPanel = new JPanel(new BorderLayout());
@@ -119,6 +128,8 @@ public class MainFrame extends JFrame {
 
             if (newProduct != null) {
                 products.add(newProduct);
+                entryCount = products.size();
+                enteryCountLabel.setText("Entries: " + entryCount);
                 // Optionally update your text area (or other UI component) with the new product's information
                 makerTextArea.setText("");
                 for (Product p : products) {
@@ -146,6 +157,9 @@ public class MainFrame extends JFrame {
             } else {
                 // Remove the last product from the ArrayList
                 products.remove(products.size() - 1);
+                entryCount = products.size();
+                enteryCountLabel.setText("Entries: " + entryCount);
+
 
                 // Clear the TextArea
                 makerTextArea.setText("");
@@ -184,7 +198,7 @@ public class MainFrame extends JFrame {
         makerBottomPanel.add(saveFileButton);
 
 
-        makerMainPanel.add(makerTitleLabel, BorderLayout.NORTH);
+        makerMainPanel.add(makerTopPanel, BorderLayout.NORTH);
         makerMainPanel.add(makerCenterPanel, BorderLayout.CENTER);
         makerMainPanel.add(makerBottomPanel, BorderLayout.SOUTH);
 
