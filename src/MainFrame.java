@@ -1,6 +1,7 @@
 import javax.swing.*;
 import java.awt.*;
 import java.io.File;
+import java.util.ArrayList;
 
 public class MainFrame extends JFrame {
     CardLayout cardLayout;
@@ -18,6 +19,7 @@ public class MainFrame extends JFrame {
     JLabel mainLabel;
 
     File inputFile;
+    ArrayList<Product> products = new ArrayList<Product>();
 
     public MainFrame() {
         super("Lab 10: Sorted Array List");
@@ -45,7 +47,7 @@ public class MainFrame extends JFrame {
     private JPanel createCenterPanel() {
         cardLayout = new CardLayout();
         centerPanel = new JPanel(cardLayout);
-        cardOne = RandProductMaker.getFramePanel();
+        cardOne = createMakerPanel();
         cardTwo = productSearchPanel();
         centerPanel.add(cardOne, "view1");
         centerPanel.add(cardTwo, "view2");
@@ -81,6 +83,116 @@ public class MainFrame extends JFrame {
 
         return southPanel;
     }
+    private JPanel createMakerPanel() {
+        ArrayList<Product> products = new ArrayList<Product>();
+
+        JPanel makerMainPanel = new JPanel(new BorderLayout());
+
+        //top panel
+        JLabel makerTitleLabel = new JLabel("Rand Product", SwingConstants.CENTER);
+
+        //center panel
+        JPanel makerCenterPanel = new JPanel(new BorderLayout());
+        JTextArea makerTextArea = new JTextArea();
+        makerTextArea.setFont(new Font("Monospaced", Font.PLAIN, 10));
+        makerTextArea.setEditable(false);
+        JScrollPane makerScrollPane = new JScrollPane(makerTextArea);
+        makerCenterPanel.add(makerScrollPane, BorderLayout.CENTER);
+
+
+
+
+
+
+        //bottom panel
+        JPanel makerBottomPanel = new JPanel(new GridLayout(1, 3));
+        JButton addProductButton = new JButton("Add Product");
+        addProductButton.addActionListener(e -> {
+
+
+            // Create and display the custom ProductMakerDialog
+            ProductMakerDialog dialog = new ProductMakerDialog(MainFrame.this);
+            dialog.setVisible(true);
+
+            // Retrieve the new product (if one was created)
+            Product newProduct = dialog.getProduct();
+
+            if (newProduct != null) {
+                products.add(newProduct);
+                // Optionally update your text area (or other UI component) with the new product's information
+                makerTextArea.setText("");
+                for (Product p : products) {
+                    makerTextArea.append(p.toFormattedString() + "\n\n");
+                }
+            } else {
+                // Optionally alert that the operation was cancelled
+                JOptionPane.showMessageDialog(MainFrame.this,
+                        "Product creation was cancelled.",
+                        "Cancelled",
+                        JOptionPane.INFORMATION_MESSAGE);
+            }
+        });
+
+        JButton removeProductButton = new JButton("Remove Product");
+        removeProductButton.addActionListener(e -> {
+            // Get the parent frame so any messages are centered correctly
+            Frame parentFrame = (Frame) SwingUtilities.getWindowAncestor(makerMainPanel);
+
+            if (products.isEmpty()) {
+                JOptionPane.showMessageDialog(parentFrame,
+                        "No products to remove.",
+                        "Remove Product",
+                        JOptionPane.INFORMATION_MESSAGE);
+            } else {
+                // Remove the last product from the ArrayList
+                products.remove(products.size() - 1);
+
+                // Clear the TextArea
+                makerTextArea.setText("");
+
+                // Loop through the updated products list and print each product's toString() output
+                for (Product p : products) {
+                    makerTextArea.append(p.toFormattedString() + "\n\n");
+                }
+            }
+        });
+        JButton saveFileButton = new JButton("Save to File");
+        saveFileButton.addActionListener(e -> {
+            // Check if there are any products to save.
+            if (products.isEmpty()) {
+                JOptionPane.showMessageDialog(null,
+                        "No products to save.",
+                        "Save File",
+                        JOptionPane.INFORMATION_MESSAGE);
+                return;
+            }
+
+            // Build a string with each product's formatted output on a new line.
+            StringBuilder sb = new StringBuilder();
+            for (Product product : products) {
+                sb.append(product.toString()).append("\n");
+            }
+
+            // Send the complete string to be saved using FilePicker's SmartFileWriter.
+            FilePicker.SmartFileWriter(sb.toString());
+        });
+
+
+        //add all to panel.
+        makerBottomPanel.add(addProductButton);
+        makerBottomPanel.add(removeProductButton);
+        makerBottomPanel.add(saveFileButton);
+
+
+        makerMainPanel.add(makerTitleLabel, BorderLayout.NORTH);
+        makerMainPanel.add(makerCenterPanel, BorderLayout.CENTER);
+        makerMainPanel.add(makerBottomPanel, BorderLayout.SOUTH);
+
+
+
+        return makerMainPanel;
+    }
+
     private JPanel productSearchPanel() {
 
 
@@ -99,8 +211,8 @@ public class MainFrame extends JFrame {
         JTextArea searchTextArea = new JTextArea();
         searchTextArea.setFont(new Font("Monospaced", Font.PLAIN, 10));
         searchTextArea.setEditable(false);
-        JScrollPane scrollPane = new JScrollPane(searchTextArea);
-        SearchCenterPanel.add(scrollPane, BorderLayout.CENTER);
+        JScrollPane searchScrollPane = new JScrollPane(searchTextArea);
+        SearchCenterPanel.add(searchScrollPane, BorderLayout.CENTER);
 
 
 
@@ -117,34 +229,65 @@ public class MainFrame extends JFrame {
         JButton SearchButton = new JButton("Search Product");
         SearchButton.addActionListener(e -> {
             if (inputFile == null) {
-                JOptionPane.showMessageDialog(null, "No file selected.", "Invalid File", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(null,
+                        "No file selected.",
+                        "Invalid File",
+                        JOptionPane.ERROR_MESSAGE);
                 return;
             }
-            // Retrieve and trim the search term from the text field
+            // Retrieve and trim the search term from the text field.
             String searchTerm = searchSearchField.getText().trim();
 
-            // Validate that the search term is not empty
+            // Validate that the search term is not empty.
             if (searchTerm.isEmpty()) {
-                JOptionPane.showMessageDialog(null, "Search term cannot be empty.", "Invalid Input", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(null,
+                        "Search term cannot be empty.",
+                        "Invalid Input",
+                        JOptionPane.ERROR_MESSAGE);
                 return;
             }
 
-            // Validate that the search term has a length of 35 characters or fewer
+            // Validate that the search term has a length of 35 characters or fewer.
             if (searchTerm.length() > 35) {
-                JOptionPane.showMessageDialog(null, "Search term must be 35 characters or fewer.", "Invalid Search Term", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(null,
+                        "Search term must be 35 characters or fewer.",
+                        "Invalid Search Term",
+                        JOptionPane.ERROR_MESSAGE);
                 return;
             }
 
-            // Call the method to process the search term (to be implemented)
-            if (inputFile != null) {
-                String filteredString = FilePicker.SearchedStreamRead(inputFile, searchTerm);
-                searchTextArea.setText(filteredString);
-            } else {
-                JOptionPane.showMessageDialog(null, "No file selected.", "Invalid File", JOptionPane.ERROR_MESSAGE);
+            // Retrieve the filtered string based on the search term.
+            String filteredString = FilePicker.NoCaseSearchedStreamRead(inputFile, searchTerm);
+
+            // Split the filteredString into lines.
+            String[] lines = filteredString.split("\\r?\\n");
+
+            // Create a temporary ArrayList<Product> to hold converted products.
+            ArrayList<Product> tempProducts = new ArrayList<>();
+
+            // Process each line: convert it into a Product using Product.toProduct().
+            for (String line : lines) {
+                // Skip empty lines (if any).
+                if (line.trim().isEmpty()) continue;
+                try {
+                    Product prod = Product.toProduct(line);
+                    tempProducts.add(prod);
+                } catch (Exception ex) {
+                    // Optionally log or notify conversion issues for the given line.
+                    System.err.println("Error converting line to product: " + line);
+                }
             }
 
+            // Build a temporary string with each product's formatted output (one per line).
+            StringBuilder sb = new StringBuilder();
+            for (Product prod : tempProducts) {
+                sb.append(prod.toFormattedString()).append("\n" + "\n");
+            }
 
+            // Set the text of the searchTextArea to the final formatted string.
+            searchTextArea.setText(sb.toString());
         });
+
         JButton addInputFileButton = new JButton("Add Input File");
         addInputFileButton.addActionListener(e -> {
             System.out.println("Add Input File");
